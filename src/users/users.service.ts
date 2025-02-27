@@ -1,44 +1,49 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaService } from '../prisma/prisma.service';
+import { User as UserModel } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-
-const users: User[] = [];
+import * as bcrypt from 'bcryptjs';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  create(newUser: CreateUserDto) {
-    const user: User = { id: uuidv4(), ...newUser };
-    users.push(user);
-    return user;
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(newUser: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(newUser.password, 10);
+    return this.prisma.user.create({
+      data: {
+        name: newUser.name,
+        email: newUser.email,
+        password: hashedPassword,
+      },
+    });
+  }
+  async findAll() {
+    return this.prisma.user.findMany();
   }
 
-  findAll() {
-    return users;
-  }
-
-  findOne(id: string) {
-    const user = users.find((user) => user.id === id);
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const index = users.findIndex((user) => user.id === id);
-    if (index === -1)
-      throw new NotFoundException(`User with id ${id} not found`);
-
-    users[index] = { ...users[index], ...updateUserDto };
-    return users[index];
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
-  remove(id: string) {
-    const index = users.findIndex((user) => user.id === id);
-    if (index === -1)
-      throw new NotFoundException(`User with id ${id} not found`);
+  remove(id: number) {
+    return this.prisma.user.delete({ where: { id } });
+  }
 
-    const deletedUser = users.splice(index, 1);
-    return { message: 'User deleted successfully', user: deletedUser[0] };
+  async findByEmail(email: string): Promise<UserModel | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 }
