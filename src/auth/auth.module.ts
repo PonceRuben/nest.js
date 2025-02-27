@@ -12,7 +12,7 @@ import { JwtAuthGuard } from './guards/guards.guard';
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: 'PKj5daGYyovSzonzFjAYn3UC1P/tI8SWxscw7l6DymA=',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60s' }, // Opcional: configura el tiempo de expiración
     }),
   ],
