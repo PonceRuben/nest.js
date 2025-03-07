@@ -8,10 +8,6 @@ import { JwtAuthGuard } from './guards/guards.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(createUserDto);
-  }
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     const { email, password } = loginDto;

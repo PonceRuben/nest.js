@@ -11,19 +11,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   async login(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { email: user.email, sub: user.id }; // Aquí puedes agregar más datos si lo deseas
+    const payload = { email: user.email, sub: user.id };
     const token = this.jwtService.sign(payload);
 
-    return { message: 'Login successful', token }; // Aquí puedes generar un token si usas JWT
+    return { message: 'Login successful', token };
   }
 }
