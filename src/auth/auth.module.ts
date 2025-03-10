@@ -6,7 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersController } from 'src/users/users.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtAuthGuard } from './guards/guards.guard';
+import { JwtAuthGuard } from './guards/jwt-guard.guard';
 
 @Module({
   imports: [
