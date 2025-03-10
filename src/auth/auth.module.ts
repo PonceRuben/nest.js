@@ -13,7 +13,7 @@ import { JwtAuthGuard } from './guards/guards.guard';
     UsersModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' }, // Opcional: configura el tiempo de expiración
+      signOptions: { expiresIn: '120s' }, // Opcional: configura el tiempo de expiración
     }),
   ],
   providers: [AuthService, PrismaService, UsersService, JwtAuthGuard],
