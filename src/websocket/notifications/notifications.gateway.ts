@@ -1,9 +1,11 @@
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway()
 export class NotificationsGateway {
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  handleMessage(@MessageBody() data: string, @ConnectedSocket() socket: Socket): string {
+    socket.emit('message', {name: 'Nest'}, (data) =>console.log(data))
+    return (data);
   }
 }

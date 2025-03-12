@@ -6,9 +6,10 @@ import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
 import { NotificationsGateway } from './websocket/notifications/notifications.gateway';
+import { NotificationsModule } from './websocket/notifications/notifications.module';
 
 @Module({
-  imports: [UsersModule, ProductsModule, AuthModule],
+  imports: [UsersModule, ProductsModule, AuthModule, NotificationsModule],
   controllers: [AppController],
   providers: [AppService, PrismaService, NotificationsGateway],
 })
