@@ -9,6 +9,8 @@ import {
   UseGuards,
   Res,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -18,6 +20,7 @@ import { AcceptedRoles } from 'src/custom-decorators/roles.decorator';
 import { Roles } from '@prisma/client';
 import { RolesGuard } from 'src/custom-decorators/roles.guard';
 import { NotificationsGateway } from 'src/websocket/notifications/notifications.gateway';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 //@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('products')
@@ -39,6 +42,11 @@ export class ProductsController {
     });
   }
 
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return this.productsService.uploadFile(file)
+  }
   @Get()
  // @UseGuards(JwtAuthGuard)
   findAll() {

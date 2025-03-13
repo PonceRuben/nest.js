@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
 import { NotificationsGateway } from './websocket/notifications/notifications.gateway';
 import { NotificationsModule } from './websocket/notifications/notifications.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
-  imports: [UsersModule, ProductsModule, AuthModule, NotificationsModule],
+  imports: [UsersModule, ProductsModule, AuthModule, NotificationsModule, S3Module],
   controllers: [AppController],
   providers: [AppService, PrismaService, NotificationsGateway],
 })
