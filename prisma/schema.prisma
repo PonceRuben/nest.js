@@ -27,3 +27,13 @@ model User {
   updatedAt DateTime @updatedAt
   rol       Roles    @default(USER)
 }
+
+
+model Product {
+  id      Int   @id @default(autoincrement())
+  title   String
+  stock   Int?
+  description  String?
+  price   Int
+  picture String?
+}

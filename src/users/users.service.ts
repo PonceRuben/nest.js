@@ -4,7 +4,6 @@ import { User as UserModel } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {

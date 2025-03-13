@@ -1,47 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Product as ProductModel } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
-
-const products: Product[] = [];
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class ProductsService {
-  create(newProduct: CreateProductDto) {
-    const product: Product = { id: uuidv4(), ...newProduct };
-    products.push(product);
-    return `The product ${product.title} has been added`;
+  constructor(private readonly prisma: PrismaService) {}
+  async create(newProduct: CreateProductDto) {
+    return this.prisma.product.create({
+      data: {
+        title: newProduct.title,
+        price: newProduct.price,
+        description: newProduct.description,
+      },
+    });
+  }
+  async findAll() {
+    return this.prisma.product.findMany();
   }
 
-  findAll() {
-    return products;
-  }
-
-  findOne(id: string) {
-    const product = products.find((product) => product.id === id);
+  async findOne(id: number) {
+    const product = await this.prisma.product.findUnique({ where: { id } });
     if (!product)
       throw new NotFoundException(`Product with id ${id} not found`);
     return product;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    const index = products.findIndex((product) => product.id === id);
-    if (index === -1)
-      throw new NotFoundException(`Product with id ${id} not found`);
-
-    products[index] = { ...products[index], ...updateProductDto };
-    return products[index];
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    return this.prisma.product.update({
+      where: { id },
+      data: updateProductDto,
+    });
   }
 
-  remove(id: string) {
-    const index = products.findIndex((product) => product.id === id);
-    if (index === -1)
-      throw new NotFoundException(`Product with id ${id} not found`);
-    const deletedProduct = products.splice(index, 1);
-    return {
-      message: 'Product deleted successfully',
-      product: deletedProduct[0],
-    };
+  remove(id: number) {
+    return this.prisma.product.delete({
+      where: { id },
+    });
   }
 }
