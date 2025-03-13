@@ -1,11 +1,31 @@
-import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import {
+  SubscribeMessage,
+  WebSocketGateway,
+  MessageBody,
+  ConnectedSocket,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import { Injectable } from '@nestjs/common';
+import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway()
 export class NotificationsGateway {
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: string, @ConnectedSocket() socket: Socket): string {
-    socket.emit('message', {name: 'Nest'}, (data) =>console.log(data))
-    return (data);
+  @WebSocketServer()
+  server: Server; // El servidor WebSocket
+
+  @SubscribeMessage('message') // Este es el mensaje que los clientes pueden enviar
+  handleMessage(
+    @MessageBody() data: string,
+    @ConnectedSocket() socket: Socket,
+  ): void {
+    socket.emit('response', { message: 'Mensaje recibido correctamente' });
+  }
+
+  // Método para enviar mensajes a todos los clientes
+  sendNotification(message: string) {
+    this.server.emit('notification', message); // Envia un mensaje a todos los clientes conectados
   }
 }
+
+//El decorador Subscribe Message nos permite definir como se va a llamar el elemento
+//data es el contenido del mensaje y el decorador MessageBody es para que se reconozca como un mensaje que viene dentro del socket
