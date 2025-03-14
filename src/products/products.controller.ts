@@ -28,7 +28,7 @@ export class ProductsController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+ // @UseGuards(JwtAuthGuard, RolesGuard)
   @AcceptedRoles(Roles.ADMIN)
   create(@Body() createProductDto: CreateProductDto, @Res() res) {
     const product = this.productsService.create(createProductDto);
@@ -40,7 +40,7 @@ export class ProductsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+ // @UseGuards(JwtAuthGuard)
   findAll() {
     return this.productsService.findAll();
   }
